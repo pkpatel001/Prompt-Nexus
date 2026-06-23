@@ -1,22 +1,32 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: AI Prompt Engineering Studio API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: categories
+    description: Prompt category operations
+  - name: prompts
+    description: Prompt operations
+  - name: platforms
+    description: AI platform operations
+  - name: tips
+    description: Expert tips operations
+  - name: favorites
+    description: User favorites operations
+  - name: stats
+    description: Dashboard stats
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +34,445 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all prompt categories
+      parameters:
+        - name: parentId
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a new category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Created category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    get:
+      operationId: getCategory
+      tags: [categories]
+      summary: Get category by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /platforms:
+    get:
+      operationId: listPlatforms
+      tags: [platforms]
+      summary: List all AI platforms
+      responses:
+        "200":
+          description: List of platforms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Platform"
+    post:
+      operationId: createPlatform
+      tags: [platforms]
+      summary: Create a new AI platform
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlatformInput"
+      responses:
+        "201":
+          description: Created platform
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Platform"
+
+  /platforms/{id}:
+    get:
+      operationId: getPlatform
+      tags: [platforms]
+      summary: Get platform by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Platform
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Platform"
+        "404":
+          description: Not found
+
+  /prompts:
+    get:
+      operationId: listPrompts
+      tags: [prompts]
+      summary: List prompts with filtering
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+        - name: platformId
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+        - name: difficulty
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+            enum: ["beginner", "intermediate", "advanced", null]
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+        - name: featured
+          in: query
+          required: false
+          schema:
+            type: ["boolean", "null"]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of prompts with total count
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromptListResponse"
+    post:
+      operationId: createPrompt
+      tags: [prompts]
+      summary: Create a new prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptInput"
+      responses:
+        "201":
+          description: Created prompt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prompt"
+
+  /prompts/{id}:
+    get:
+      operationId: getPrompt
+      tags: [prompts]
+      summary: Get prompt by ID with full detail
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Prompt detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromptDetail"
+        "404":
+          description: Not found
+    patch:
+      operationId: updatePrompt
+      tags: [prompts]
+      summary: Update a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptUpdate"
+      responses:
+        "200":
+          description: Updated prompt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prompt"
+    delete:
+      operationId: deletePrompt
+      tags: [prompts]
+      summary: Delete a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /prompts/{id}/examples:
+    get:
+      operationId: listPromptExamples
+      tags: [prompts]
+      summary: List examples for a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of examples
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PromptExample"
+    post:
+      operationId: createPromptExample
+      tags: [prompts]
+      summary: Add an example to a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptExampleInput"
+      responses:
+        "201":
+          description: Created example
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromptExample"
+
+  /tips:
+    get:
+      operationId: listTips
+      tags: [tips]
+      summary: List expert tips
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+        - name: level
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+            enum: ["beginner", "intermediate", "advanced", null]
+        - name: platformId
+          in: query
+          required: false
+          schema:
+            type: ["integer", "null"]
+      responses:
+        "200":
+          description: List of tips
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tip"
+    post:
+      operationId: createTip
+      tags: [tips]
+      summary: Create a new expert tip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TipInput"
+      responses:
+        "201":
+          description: Created tip
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tip"
+
+  /favorites:
+    get:
+      operationId: listFavorites
+      tags: [favorites]
+      summary: List favorited prompts
+      responses:
+        "200":
+          description: List of favorited prompt IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+    post:
+      operationId: addFavorite
+      tags: [favorites]
+      summary: Add a prompt to favorites
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FavoriteInput"
+      responses:
+        "201":
+          description: Added to favorites
+
+  /favorites/{promptId}:
+    delete:
+      operationId: removeFavorite
+      tags: [favorites]
+      summary: Remove a prompt from favorites
+      parameters:
+        - name: promptId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Removed
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [stats]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /stats/categories:
+    get:
+      operationId: getCategoryStats
+      tags: [stats]
+      summary: Get prompt count per category
+      responses:
+        "200":
+          description: Category stats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryStat"
+
+  /stats/featured:
+    get:
+      operationId: getFeaturedPrompts
+      tags: [stats]
+      summary: Get featured/top prompts
+      responses:
+        "200":
+          description: Featured prompts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Prompt"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +480,420 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    Category:
+      type: object
+      required: [id, name, slug, icon, color, description, promptCount, sortOrder]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        parentId:
+          type: ["integer", "null"]
+        promptCount:
+          type: integer
+        sortOrder:
+          type: integer
+        createdAt:
+          type: string
+
+    CategoryInput:
+      type: object
+      required: [name, slug, icon, color, description]
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        parentId:
+          type: ["integer", "null"]
+        sortOrder:
+          type: integer
+
+    CategoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        sortOrder:
+          type: integer
+
+    Platform:
+      type: object
+      required: [id, name, slug, type, description, logoUrl, website, capabilities]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        slug:
+          type: string
+        type:
+          type: string
+          enum: [text, image, audio, video, code, multimodal]
+        description:
+          type: string
+        logoUrl:
+          type: string
+        website:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+        promptCount:
+          type: integer
+        createdAt:
+          type: string
+
+    PlatformInput:
+      type: object
+      required: [name, slug, type, description, logoUrl, website]
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        type:
+          type: string
+          enum: [text, image, audio, video, code, multimodal]
+        description:
+          type: string
+        logoUrl:
+          type: string
+        website:
+          type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+
+    Prompt:
+      type: object
+      required: [id, title, template, categoryId, difficulty, platformIds, tags, isFeatured, useCount]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        categoryId:
+          type: integer
+        categoryName:
+          type: string
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        platformIds:
+          type: array
+          items:
+            type: integer
+        platformNames:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        variables:
+          type: array
+          items:
+            $ref: "#/components/schemas/PromptVariable"
+        isFeatured:
+          type: boolean
+        useCount:
+          type: integer
+        createdAt:
+          type: string
+
+    PromptDetail:
+      type: object
+      required: [id, title, template, categoryId, difficulty, platformIds, tags, isFeatured, useCount, examples, tips]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        categoryId:
+          type: integer
+        categoryName:
+          type: string
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        platformIds:
+          type: array
+          items:
+            type: integer
+        platformNames:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        variables:
+          type: array
+          items:
+            $ref: "#/components/schemas/PromptVariable"
+        isFeatured:
+          type: boolean
+        useCount:
+          type: integer
+        examples:
+          type: array
+          items:
+            $ref: "#/components/schemas/PromptExample"
+        tips:
+          type: array
+          items:
+            $ref: "#/components/schemas/Tip"
+        createdAt:
+          type: string
+
+    PromptVariable:
+      type: object
+      required: [name, description, placeholder]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        placeholder:
+          type: string
+        required:
+          type: boolean
+
+    PromptInput:
+      type: object
+      required: [title, template, categoryId, difficulty]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        categoryId:
+          type: integer
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        platformIds:
+          type: array
+          items:
+            type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        variables:
+          type: array
+          items:
+            $ref: "#/components/schemas/PromptVariable"
+        isFeatured:
+          type: boolean
+
+    PromptUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        template:
+          type: string
+        categoryId:
+          type: integer
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        platformIds:
+          type: array
+          items:
+            type: integer
+        tags:
+          type: array
+          items:
+            type: string
+        isFeatured:
+          type: boolean
+
+    PromptExample:
+      type: object
+      required: [id, promptId, title, userInput, aiOutput, platformId, quality]
+      properties:
+        id:
+          type: integer
+        promptId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        userInput:
+          type: string
+        aiOutput:
+          type: string
+        platformId:
+          type: ["integer", "null"]
+        platformName:
+          type: string
+        quality:
+          type: string
+          enum: [poor, good, excellent]
+        sortOrder:
+          type: integer
+
+    PromptExampleInput:
+      type: object
+      required: [title, userInput, aiOutput, quality]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        userInput:
+          type: string
+        aiOutput:
+          type: string
+        platformId:
+          type: ["integer", "null"]
+        quality:
+          type: string
+          enum: [poor, good, excellent]
+        sortOrder:
+          type: integer
+
+    PromptListResponse:
+      type: object
+      required: [prompts, total]
+      properties:
+        prompts:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prompt"
+        total:
+          type: integer
+
+    Tip:
+      type: object
+      required: [id, title, content, level, categoryId]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        categoryId:
+          type: ["integer", "null"]
+        platformId:
+          type: ["integer", "null"]
+        platformName:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        sortOrder:
+          type: integer
+
+    TipInput:
+      type: object
+      required: [title, content, level]
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        level:
+          type: string
+          enum: [beginner, intermediate, advanced]
+        categoryId:
+          type: ["integer", "null"]
+        platformId:
+          type: ["integer", "null"]
+        tags:
+          type: array
+          items:
+            type: string
+        sortOrder:
+          type: integer
+
+    FavoriteInput:
+      type: object
+      required: [promptId]
+      properties:
+        promptId:
+          type: integer
+
+    DashboardStats:
+      type: object
+      required: [totalPrompts, totalCategories, totalPlatforms, totalTips, featuredCount, beginnerCount, intermediateCount, advancedCount]
+      properties:
+        totalPrompts:
+          type: integer
+        totalCategories:
+          type: integer
+        totalPlatforms:
+          type: integer
+        totalTips:
+          type: integer
+        featuredCount:
+          type: integer
+        beginnerCount:
+          type: integer
+        intermediateCount:
+          type: integer
+        advancedCount:
+          type: integer
+
+    CategoryStat:
+      type: object
+      required: [categoryId, categoryName, icon, color, promptCount]
+      properties:
+        categoryId:
+          type: integer
+        categoryName:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        promptCount:
+          type: integer
