@@ -10,12 +10,14 @@ import {
   Zap,
   Menu,
   X,
+  Wand2,
 } from "lucide-react";
 import { useState } from "react";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/explore", label: "Explore", icon: Search },
+  { href: "/builder", label: "Prompt Builder", icon: Wand2 },
   { href: "/categories", label: "Categories", icon: Grid3X3 },
   { href: "/platforms", label: "Platforms", icon: Monitor },
   { href: "/tips", label: "Tips & Tricks", icon: Lightbulb },

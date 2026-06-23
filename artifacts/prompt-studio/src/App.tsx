@@ -10,6 +10,7 @@ import Categories from "@/pages/categories";
 import Platforms from "@/pages/platforms";
 import Tips from "@/pages/tips";
 import Favorites from "@/pages/favorites";
+import Builder from "@/pages/builder";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -32,6 +33,7 @@ function Router() {
         <Route path="/platforms" component={Platforms} />
         <Route path="/tips" component={Tips} />
         <Route path="/favorites" component={Favorites} />
+        <Route path="/builder" component={Builder} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
