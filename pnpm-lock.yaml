@@ -2384,8 +2384,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@5.1.0:
-    resolution: {integrity: sha512-s8VA5jkR8f22S3NAXmhKPFqGUduqZGlsufabVOgN14iTdw/RXcym7bKkbwjxLK9Yw2lEvvmJjFp119+KPeo8Kg==}
+  js-yaml@5.4.2:
+    resolution: {integrity: sha512-m+aqu+LwO1O6sIopafj8HUVl5aawITwZQe/yHpMCKjaWBaA/d07B/QdMb3529REftiU+RMMHL3Vlsw3hON7vWg==}
     hasBin: true
 
   jsesc@3.1.0:
@@ -4926,7 +4926,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@5.1.0:
+  js-yaml@5.4.2:
     dependencies:
       argparse: 2.0.1
 
@@ -5089,7 +5089,7 @@ snapshots:
       fs-extra: 11.3.5
       get-tsconfig: 4.14.0
       jiti: 2.7.0
-      js-yaml: 5.1.0
+      js-yaml: 5.4.2
       remeda: 2.39.0
       string-argv: 0.3.2
       typedoc: 0.28.19(typescript@5.9.3)
